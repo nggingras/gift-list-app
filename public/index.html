@@ -99,8 +99,17 @@
             color: white;
             cursor: pointer;
         }
+
+        #welcome-message {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #333;
+        }
     </style>
     <script>
+        let userName = '';
+
         // Function to load the list of gifts
         async function loadGifts() {
             const response = await fetch('/gifts');
@@ -116,20 +125,28 @@
                 const giftName = document.createElement('span');
                 giftName.textContent = gift.name;
 
-                // Create the reserve/unreserve button
-                const reserveButton = document.createElement('button');
-                
-                if (!gift.reserved) {
-                    // If the gift is not reserved, allow reserving
-                    reserveButton.textContent = 'Reserve';
-                    reserveButton.className = 'reserve-button';
-                    reserveButton.onclick = () => reserveGift(gift.id, gift.name);
-                } else {
-                    // If already reserved, show "Unreserve" button
-                    reserveButton.textContent = 'Unreserve';
-                    reserveButton.className = 'unreserve-button';
-                    reserveButton.onclick = () => unreserveGift(gift.id, gift.name);
-                    li.classList.add('reserved');
+                // Create the reserve/unreserve button if the user is not Nicolas Gauvin-Gingras
+                if (userName !== 'Nicolas Gauvin-Gingras') {
+                    const reserveButton = document.createElement('button');
+                    
+                    if (!gift.reserved) {
+                        // If the gift is not reserved, allow reserving
+                        reserveButton.textContent = 'Reserve';
+                        reserveButton.className = 'reserve-button';
+                        reserveButton.onclick = () => reserveGift(gift.id, gift.name);
+                    } else {
+                        // If already reserved, show "Unreserve" button
+                        reserveButton.textContent = 'Unreserve';
+                        reserveButton.className = 'unreserve-button';
+                        reserveButton.onclick = () => unreserveGift(gift.id, gift.name);
+                        li.classList.add('reserved');
+                    }
+
+                    const buttonContainer = document.createElement('div');
+                    buttonContainer.className = 'gift-buttons';
+                    buttonContainer.appendChild(reserveButton);
+
+                    li.appendChild(buttonContainer);
                 }
 
                 // Remove Button
@@ -138,9 +155,8 @@
                 removeButton.className = 'remove-button';
                 removeButton.onclick = () => removeGift(gift.id);
 
-                const buttonContainer = document.createElement('div');
+                const buttonContainer = li.querySelector('.gift-buttons') || document.createElement('div');
                 buttonContainer.className = 'gift-buttons';
-                buttonContainer.appendChild(reserveButton);
                 buttonContainer.appendChild(removeButton);
 
                 li.appendChild(giftName);
@@ -196,6 +212,10 @@
 
         // Function to add a new gift
         async function addGift() {
+            if (userName !== 'Nicolas Gauvin-Gingras') {
+                alert('You do not have permission to add gifts.');
+                return;
+            }
             const giftName = document.getElementById('new-gift').value;
             await fetch('/gifts', {
                 method: 'POST',
@@ -208,15 +228,35 @@
 
         // Function to remove a gift
         async function removeGift(id) {
+            if (userName !== 'Nicolas Gauvin-Gingras') {
+                alert('You do not have permission to remove gifts.');
+                return;
+            }
             await fetch(`/gifts/${id}`, { method: 'DELETE' });
             loadGifts(); // Refresh the gift list after removing
         }
 
-        window.onload = loadGifts; // Load the gifts when the page is loaded
+        // Function to prompt for the user's name
+        function askForName() {
+            userName = prompt("Please enter your name:");
+            if (userName) {
+                const welcomeMessage = document.getElementById('welcome-message');
+                welcomeMessage.textContent = `Welcome, ${userName}!`;
+                welcomeMessage.style.display = 'block';
+            }
+        }
+
+        window.onload = () => {
+            askForName();
+            loadGifts();
+        };
     </script>
 </head>
 <body>
     <h1>Gift List</h1>
+
+    <!-- Welcome message -->
+    <div id="welcome-message" style="display:none;"></div>
 
     <!-- Confirmation message when a gift is reserved -->
     <div id="confirmation" class="confirmation" style="display:none;"></div>
