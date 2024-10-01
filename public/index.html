@@ -176,7 +176,7 @@
             if (response.ok) {
                 // Show a confirmation message
                 const confirmationDiv = document.getElementById('confirmation');
-                confirmationDiv.textContent = `You have successfully reserved the gift: "${giftName}"!`;
+                confirmationDiv.textContent = `Le cadeau est réservé avec succès: "${giftName}"!`;
                 confirmationDiv.style.display = 'block';
                 setTimeout(() => {
                     confirmationDiv.style.display = 'none'; // Hide message after a few seconds
@@ -202,7 +202,7 @@
             if (response.ok) {
                 // Show a confirmation message
                 const confirmationDiv = document.getElementById('confirmation');
-                confirmationDiv.textContent = `You have successfully unreserved the gift: "${giftName}"!`;
+                confirmationDiv.textContent = `Le cadeau peut maintenant être réservé à nouveau: "${giftName}"!`;
                 confirmationDiv.style.display = 'block';
                 setTimeout(() => {
                     confirmationDiv.style.display = 'none'; // Hide message after a few seconds
@@ -224,7 +224,7 @@
         // Function to add a new gift
         async function addGift() {
             if (userName !== 'Nicolas Gauvin-Gingras') {
-                alert('You do not have permission to add gifts.');
+                alert(`Tu n'as pas la persmission d'ajouter des cadeaux.`);
                 return;
             }
             const giftName = document.getElementById('new-gift').value;
@@ -240,7 +240,7 @@
         // Function to remove a gift
         async function removeGift(id) {
             if (userName !== 'Nicolas Gauvin-Gingras') {
-                alert('You do not have permission to remove gifts.');
+                alert(`Tu n'as pas la permission de supprimer des cadeaux.`);
                 return;
             }
             await fetch(`/gifts/${id}`, { method: 'DELETE' });
@@ -249,7 +249,7 @@
 
         // Function to prompt for the user's name
         function askForName() {
-            userName = prompt("Please enter your name:");
+            userName = prompt("S'il vous plaît, entrez votre nom. Vous devez utiliser le même nom à chaque connexion pour réserver ou annuler un cadeau.");
             if (userName) {
                 const welcomeMessage = document.getElementById('welcome-message');
                 welcomeMessage.textContent = `Welcome, ${userName}!`;
