@@ -138,7 +138,7 @@
                         // If already reserved, show "Unreserve" button
                         reserveButton.textContent = 'Unreserve';
                         reserveButton.className = 'unreserve-button';
-                        reserveButton.onclick = () => unreserveGift(gift.id, gift.name);
+                        reserveButton.onclick = () => unreserveGift(gift.id, gift.name, gift.reservedBy);
                         li.classList.add('reserved');
                     }
 
@@ -168,7 +168,11 @@
 
         // Function to reserve a gift
         async function reserveGift(id, giftName) {
-            const response = await fetch(`/gifts/${id}/reserve`, { method: 'POST' });
+            const response = await fetch(`/gifts/${id}/reserve`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reservedBy: userName })
+            });
             if (response.ok) {
                 // Show a confirmation message
                 const confirmationDiv = document.getElementById('confirmation');
@@ -183,14 +187,18 @@
                 const reserveButton = listItem.querySelector('button');
                 reserveButton.textContent = 'Unreserve';
                 reserveButton.className = 'unreserve-button';
-                reserveButton.onclick = () => unreserveGift(id, giftName);
+                reserveButton.onclick = () => unreserveGift(id, giftName, userName);
                 listItem.classList.add('reserved');
             }
         }
 
         // Function to unreserve a gift
-        async function unreserveGift(id, giftName) {
-            const response = await fetch(`/gifts/${id}/unreserve`, { method: 'POST' });
+        async function unreserveGift(id, giftName, reservedBy) {
+            const response = await fetch(`/gifts/${id}/unreserve`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reservedBy: userName })
+            });
             if (response.ok) {
                 // Show a confirmation message
                 const confirmationDiv = document.getElementById('confirmation');
@@ -207,6 +215,9 @@
                 reserveButton.className = 'reserve-button';
                 reserveButton.onclick = () => reserveGift(id, giftName);
                 listItem.classList.remove('reserved');
+            } else {
+                const error = await response.json();
+                alert(error.error);
             }
         }
 

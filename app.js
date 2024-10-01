@@ -12,7 +12,8 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS gifts (
         id INTEGER PRIMARY KEY,
         name TEXT,
-        reserved INTEGER DEFAULT 0
+        reserved INTEGER DEFAULT 0,
+        reservedBy TEXT
     )`);
 });
 
@@ -40,7 +41,8 @@ app.post('/gifts', (req, res) => {
 // Reserve a gift
 app.post('/gifts/:id/reserve', (req, res) => {
     const id = req.params.id;
-    db.run("UPDATE gifts SET reserved = 1 WHERE id = ? AND reserved = 0", [id], function(err) {
+    const reservedBy = req.body.reservedBy;
+    db.run("UPDATE gifts SET reserved = 1, reservedBy = ? WHERE id = ? AND reserved = 0", [reservedBy, id], function(err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -54,14 +56,23 @@ app.post('/gifts/:id/reserve', (req, res) => {
 // Unreserve a gift
 app.post('/gifts/:id/unreserve', (req, res) => {
     const id = req.params.id;
-    db.run("UPDATE gifts SET reserved = 0 WHERE id = ? AND reserved = 1", [id], function(err) {
+    const reservedBy = req.body.reservedBy;
+    db.get("SELECT reservedBy FROM gifts WHERE id = ?", [id], (err, row) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        if (this.changes === 0) {
-            return res.status(404).json({ error: 'Gift not reserved or does not exist.' });
+        if (!row) {
+            return res.status(404).json({ error: 'Gift does not exist.' });
         }
-        res.json({ success: true });
+        if (row.reservedBy !== reservedBy) {
+            return res.status(403).json({ error: 'This gift was reserved by someone else, you cannot unreserve it.' });
+        }
+        db.run("UPDATE gifts SET reserved = 0, reservedBy = NULL WHERE id = ?", [id], function(err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({ success: true });
+        });
     });
 });
 
