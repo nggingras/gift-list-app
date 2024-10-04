@@ -32,7 +32,7 @@ JavaScript
 - Node.js (v12.x or higher)
 - npm (v6.x or higher)
 
-### Installation
+### Installation and execution
 
 - Download node js from the official web site https://nodejs.org.
 - Install dependancies by running : npm install express sqlite3 body-parser
@@ -41,11 +41,13 @@ JavaScript
 
 ## Project structure
 
+```markdown
 gift-list-app/
 ├── public/
 │   ├── index.html
 │   ├── styles.css
-├── [app.js](http://_vscodecontentref_/#%7B%22uri%22%3A%7B%22%24mid%22%3A1%2C%22fsPath%22%3A%22c%3A%5C%5CUsers%5C%5CNicolas%5C%5CDocuments%5C%5CGitHub%5C%5Cgift-list-app%5C%5Capp.js%22%2C%22_sep%22%3A1%2C%22path%22%3A%22%2Fc%3A%2FUsers%2FNicolas%2FDocuments%2FGitHub%2Fgift-list-app%2Fapp.js%22%2C%22scheme%22%3A%22file%22%7D%7D)
-├── [package.json](http://_vscodecontentref_/#%7B%22uri%22%3A%7B%22%24mid%22%3A1%2C%22fsPath%22%3A%22c%3A%5C%5CUsers%5C%5CNicolas%5C%5CDocuments%5C%5CGitHub%5C%5Cgift-list-app%5C%5Cpackage.json%22%2C%22_sep%22%3A1%2C%22path%22%3A%22%2Fc%3A%2FUsers%2FNicolas%2FDocuments%2FGitHub%2Fgift-list-app%2Fpackage.json%22%2C%22scheme%22%3A%22file%22%7D%7D)
+├── [app.js]
+├── [package.json]
 ├── .env
 └── README.md
+```
