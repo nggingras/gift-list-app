@@ -4,109 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gift List App</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        #gift-list {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .gift-item {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .gift-item.reserved {
-            background-color: #f9f9f9;
-            color: gray;
-            text-decoration: line-through;
-        }
-
-        .gift-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .reserve-button {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .unreserve-button {
-            background-color: #ffc107;
-            color: white;
-        }
-
-        .remove-button {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .confirmation {
-            color: green;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        #new-gift-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        #new-gift {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            margin-right: 10px;
-            flex: 1;
-        }
-
-        #add-gift-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 3px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-
-        #welcome-message {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 18px;
-            color: #333;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
     <script>
         let userName = '';
 
@@ -264,19 +162,27 @@
     </script>
 </head>
 <body>
-    <h1>Gift List</h1>
+    <header>
+        <h1>Gift List</h1>
+    </header>
 
-    <!-- Welcome message -->
-    <div id="welcome-message" style="display:none;"></div>
+    <main>
+        <!-- Welcome message -->
+        <div id="welcome-message" class="message" style="display:none;"></div>
 
-    <!-- Confirmation message when a gift is reserved -->
-    <div id="confirmation" class="confirmation" style="display:none;"></div>
+        <!-- Confirmation message when a gift is reserved -->
+        <div id="confirmation" class="message" style="display:none;"></div>
 
-    <ul id="gift-list"></ul>
+        <ul id="gift-list"></ul>
 
-    <div id="new-gift-container">
-        <input type="text" id="new-gift" placeholder="Gift name">
-        <button id="add-gift-button" onclick="addGift()">Add Gift</button>
-    </div>
+        <div id="new-gift-container">
+            <input type="text" id="new-gift" placeholder="Gift name">
+            <button id="add-gift-button" onclick="addGift()">Add Gift</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Gift List App</p>
+    </footer>
 </body>
 </html>

@@ -1,0 +1,121 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Gift List Styles */
+#gift-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.gift-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.gift-item:hover {
+    background-color: #f9f9f9;
+}
+
+.gift-item.reserved {
+    background-color: #f0f0f0;
+    color: #888;
+    text-decoration: line-through;
+}
+
+/* Button Styles */
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.reserve-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.unreserve-button {
+    background-color: #ffc107;
+    color: white;
+}
+
+.remove-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Gift Buttons Container */
+.gift-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Confirmation Message */
+.confirmation {
+    color: green;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* New Gift Container */
+#new-gift-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#new-gift {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-right: 10px;
+    flex: 1;
+}
+
+#add-gift-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 3px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+/* Welcome Message */
+#welcome-message {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #333;
+}

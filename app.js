@@ -1,13 +1,21 @@
+// Import required modules
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
+
+// Initialize the Express app
 const app = express();
+
+// Initialize the SQLite database
 const db = new sqlite3.Database('./gift-list.db'); // In-memory database for testing
 
+// Middleware to parse JSON bodies
 app.use(bodyParser.json());
-app.use(express.static('public')); // Serve static files from the "public" directory
 
-// Create the gifts table
+// Serve static files from the "public" directory
+app.use(express.static('public'));
+
+// Create the gifts table if it doesn't exist
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS gifts (
         id INTEGER PRIMARY KEY,
@@ -17,7 +25,7 @@ db.serialize(() => {
     )`);
 });
 
-// Get the list of gifts
+// Route to get the list of all gifts
 app.get('/gifts', (req, res) => {
     db.all("SELECT * FROM gifts", [], (err, rows) => {
         if (err) {
@@ -27,7 +35,7 @@ app.get('/gifts', (req, res) => {
     });
 });
 
-// Add a new gift
+// Route to add a new gift
 app.post('/gifts', (req, res) => {
     const name = req.body.name;
     db.run("INSERT INTO gifts (name) VALUES (?)", [name], function(err) {
@@ -38,7 +46,7 @@ app.post('/gifts', (req, res) => {
     });
 });
 
-// Reserve a gift
+// Route to reserve a gift
 app.post('/gifts/:id/reserve', (req, res) => {
     const id = req.params.id;
     const reservedBy = req.body.reservedBy;
@@ -53,7 +61,7 @@ app.post('/gifts/:id/reserve', (req, res) => {
     });
 });
 
-// Unreserve a gift
+// Route to unreserve a gift
 app.post('/gifts/:id/unreserve', (req, res) => {
     const id = req.params.id;
     const reservedBy = req.body.reservedBy;
@@ -76,7 +84,7 @@ app.post('/gifts/:id/unreserve', (req, res) => {
     });
 });
 
-// Remove a gift
+// Route to remove a gift
 app.delete('/gifts/:id', (req, res) => {
     const id = req.params.id;
     db.run("DELETE FROM gifts WHERE id = ?", [id], function(err) {
@@ -90,8 +98,8 @@ app.delete('/gifts/:id', (req, res) => {
     });
 });
 
-// Start the server
+// Start the server on port 3000 and bind to all network interfaces
 const PORT = 3000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
