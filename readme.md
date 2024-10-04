@@ -6,7 +6,7 @@ The Gift List App is a simple web application that allows users to manage a list
 
 ## What it does
 
-It allows an host to create a gift. URL is then shared to users so they can reserve gifts.
+It allows an host to create a gift. URL is then shared to users so they can reserve gifts. The list is stored in a SQL BD locally on the host repository.
 
 - **Add Gifts:** Users can add new gifts to the list.
 - **Reserve Gifts:** Users can reserve gifts, preventing others from reserving the same gift.
@@ -39,6 +39,11 @@ JavaScript
 - Start the server with the following command : node app.js
 - Open Web browser and navigate to http://localhost:3000
 
+To open the port to outsiders, you can use third party like ngrok.exe. 
+- Download ngrok.exe
+- Drop ngrok.exe in the repository
+- Run the following command: ngrok http 3000
+
 ## Project structure
 
 ```markdown
@@ -48,6 +53,6 @@ gift-list-app/
 │   ├── styles.css
 ├── [app.js]
 ├── [package.json]
-├── .env
+├── gift-list.db
 └── README.md
 ```
