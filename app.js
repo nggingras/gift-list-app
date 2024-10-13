@@ -1,33 +1,34 @@
-// Import required modules
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
-
-// Initialize the Express app
+const sqlite3 = require('sqlite3').verbose();
 const app = express();
 
-// Initialize the SQLite database
-const db = new sqlite3.Database('./gift-list.db'); // In-memory database for testing
-
-// Middleware to parse JSON bodies
 app.use(bodyParser.json());
-
-// Serve static files from the "public" directory
 app.use(express.static('public'));
 
-// Create the gifts table if it doesn't exist
+const db = new sqlite3.Database('./gift-list.db');
+
+// Create tables if they don't exist
 db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS gift_lists (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        password TEXT NOT NULL
+    )`);
+
     db.run(`CREATE TABLE IF NOT EXISTS gifts (
-        id INTEGER PRIMARY KEY,
-        name TEXT,
-        reserved INTEGER DEFAULT 0,
-        reservedBy TEXT
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        reserved BOOLEAN DEFAULT 0,
+        reservedBy TEXT,
+        listId INTEGER,
+        FOREIGN KEY (listId) REFERENCES gift_lists(id)
     )`);
 });
 
-// Route to get the list of all gifts
-app.get('/gifts', (req, res) => {
-    db.all("SELECT * FROM gifts", [], (err, rows) => {
+// Fetch all gift lists
+app.get('/gift-lists', (req, res) => {
+    db.all('SELECT * FROM gift_lists', (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -35,64 +36,84 @@ app.get('/gifts', (req, res) => {
     });
 });
 
-// Route to add a new gift
-app.post('/gifts', (req, res) => {
-    const name = req.body.name;
-    db.run("INSERT INTO gifts (name) VALUES (?)", [name], function(err) {
+// Add a new gift list
+app.post('/gift-lists', (req, res) => {
+    const { name, password } = req.body;
+    db.run('INSERT INTO gift_lists (name, password) VALUES (?, ?)', [name, password], function(err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        res.status(201).json({ id: this.lastID, name });
+        res.json({ success: true, id: this.lastID });
     });
 });
 
-// Route to reserve a gift
-app.post('/gifts/:id/reserve', (req, res) => {
+// Verify password for modifying a list
+app.post('/gift-lists/:id/verify-password', (req, res) => {
     const id = req.params.id;
-    const reservedBy = req.body.reservedBy;
-    db.run("UPDATE gifts SET reserved = 1, reservedBy = ? WHERE id = ? AND reserved = 0", [reservedBy, id], function(err) {
+    const { password } = req.body;
+    db.get('SELECT * FROM gift_lists WHERE id = ? AND password = ?', [id, password], (err, row) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        if (this.changes === 0) {
-            return res.status(404).json({ error: 'Gift already reserved or does not exist.' });
+        if (row) {
+            res.json({ success: true });
+        } else {
+            res.json({ success: false });
+        }
+    });
+});
+
+// Fetch gifts for a specific list
+app.get('/gifts', (req, res) => {
+    const listId = req.query.listId;
+    db.all('SELECT * FROM gifts WHERE listId = ?', [listId], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json(rows);
+    });
+});
+
+// Reserve a gift
+app.post('/gifts/:id/reserve', (req, res) => {
+    const id = req.params.id;
+    const reservedBy = req.body.reservedBy;
+    db.run('UPDATE gifts SET reserved = 1, reservedBy = ? WHERE id = ?', [reservedBy, id], function(err) {
+        if (err) {
+            return res.status(500).json({ error: err.message });
         }
         res.json({ success: true });
     });
 });
 
-// Route to unreserve a gift
+// Unreserve a gift
 app.post('/gifts/:id/unreserve', (req, res) => {
     const id = req.params.id;
-    const reservedBy = req.body.reservedBy;
-    db.get("SELECT reservedBy FROM gifts WHERE id = ?", [id], (err, row) => {
+    db.run('UPDATE gifts SET reserved = 0, reservedBy = NULL WHERE id = ?', [id], function(err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        if (!row) {
-            return res.status(404).json({ error: 'Gift does not exist.' });
-        }
-        if (row.reservedBy !== reservedBy) {
-            return res.status(403).json({ error: 'This gift was reserved by someone else, you cannot unreserve it.' });
-        }
-        db.run("UPDATE gifts SET reserved = 0, reservedBy = NULL WHERE id = ?", [id], function(err) {
-            if (err) {
-                return res.status(500).json({ error: err.message });
-            }
-            res.json({ success: true });
-        });
+        res.json({ success: true });
     });
 });
 
-// Route to remove a gift
-app.delete('/gifts/:id', (req, res) => {
-    const id = req.params.id;
-    db.run("DELETE FROM gifts WHERE id = ?", [id], function(err) {
+// Add a new gift
+app.post('/gifts', (req, res) => {
+    const { name, listId } = req.body;
+    db.run('INSERT INTO gifts (name, listId) VALUES (?, ?)', [name, listId], function(err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        if (this.changes === 0) {
-            return res.status(404).json({ error: 'Gift not found.' });
+        res.json({ success: true, id: this.lastID });
+    });
+});
+
+// Remove a gift
+app.delete('/gifts/:id', (req, res) => {
+    const id = req.params.id;
+    db.run('DELETE FROM gifts WHERE id = ?', [id], function(err) {
+        if (err) {
+            return res.status(500).json({ error: err.message });
         }
         res.json({ success: true });
     });

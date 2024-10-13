@@ -7,10 +7,25 @@
     <link rel="stylesheet" href="styles.css">
     <script>
         let userName = '';
+        let mode = 'view'; // Default mode is view
+
+        // Function to get query parameter
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const listId = getQueryParam('listId');
+        mode = getQueryParam('mode') || 'view';
+
+        if (!listId) {
+            alert('No gift list selected!');
+            window.location.href = 'select-list.html';
+        }
 
         // Function to load the list of gifts
         async function loadGifts() {
-            const response = await fetch('/gifts');
+            const response = await fetch(`/gifts?listId=${listId}`);
             const gifts = await response.json();
             const giftList = document.getElementById('gift-list');
             giftList.innerHTML = ''; // Clear the list
@@ -23,43 +38,45 @@
                 const giftName = document.createElement('span');
                 giftName.textContent = gift.name;
 
-                // Create the reserve/unreserve button if the user is not Nicolas Gauvin-Gingras
-                if (userName !== 'Nicolas Gauvin-Gingras') {
-                    const reserveButton = document.createElement('button');
-                    
-                    if (!gift.reserved) {
-                        // If the gift is not reserved, allow reserving
-                        reserveButton.textContent = 'Reserve';
-                        reserveButton.className = 'reserve-button';
-                        reserveButton.onclick = () => reserveGift(gift.id, gift.name);
-                    } else {
-                        // If already reserved, show "Unreserve" button
-                        reserveButton.textContent = 'Unreserve';
-                        reserveButton.className = 'unreserve-button';
-                        reserveButton.onclick = () => unreserveGift(gift.id, gift.name, gift.reservedBy);
-                        li.classList.add('reserved');
-                    }
+                if (mode === 'view') {
+                    // Create the reserve/unreserve button if the user is not Nicolas Gauvin-Gingras
+                    if (userName !== 'Nicolas Gauvin-Gingras') {
+                        const reserveButton = document.createElement('button');
+                        
+                        if (!gift.reserved) {
+                            // If the gift is not reserved, allow reserving
+                            reserveButton.textContent = 'Reserve';
+                            reserveButton.className = 'reserve-button';
+                            reserveButton.onclick = () => reserveGift(gift.id, gift.name);
+                        } else {
+                            // If already reserved, show "Unreserve" button
+                            reserveButton.textContent = 'Unreserve';
+                            reserveButton.className = 'unreserve-button';
+                            reserveButton.onclick = () => unreserveGift(gift.id, gift.name, gift.reservedBy);
+                            li.classList.add('reserved');
+                        }
 
-                    const buttonContainer = document.createElement('div');
+                        const buttonContainer = document.createElement('div');
+                        buttonContainer.className = 'gift-buttons';
+                        buttonContainer.appendChild(reserveButton);
+
+                        li.appendChild(buttonContainer);
+                    }
+                } else if (mode === 'modify') {
+                    // Remove Button
+                    const removeButton = document.createElement('button');
+                    removeButton.textContent = 'Remove';
+                    removeButton.className = 'remove-button';
+                    removeButton.onclick = () => removeGift(gift.id);
+
+                    const buttonContainer = li.querySelector('.gift-buttons') || document.createElement('div');
                     buttonContainer.className = 'gift-buttons';
-                    buttonContainer.appendChild(reserveButton);
+                    buttonContainer.appendChild(removeButton);
 
                     li.appendChild(buttonContainer);
                 }
 
-                // Remove Button
-                const removeButton = document.createElement('button');
-                removeButton.textContent = 'Remove';
-                removeButton.className = 'remove-button';
-                removeButton.onclick = () => removeGift(gift.id);
-
-                const buttonContainer = li.querySelector('.gift-buttons') || document.createElement('div');
-                buttonContainer.className = 'gift-buttons';
-                buttonContainer.appendChild(removeButton);
-
                 li.appendChild(giftName);
-                li.appendChild(buttonContainer);
-
                 giftList.appendChild(li);
             });
         }
@@ -121,15 +138,11 @@
 
         // Function to add a new gift
         async function addGift() {
-            if (userName !== 'Nicolas Gauvin-Gingras') {
-                alert(`Tu n'as pas la persmission d'ajouter des cadeaux.`);
-                return;
-            }
             const giftName = document.getElementById('new-gift').value;
             await fetch('/gifts', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: giftName })
+                body: JSON.stringify({ name: giftName, listId: listId })
             });
             document.getElementById('new-gift').value = '';
             loadGifts(); // Refresh the gift list after adding a new gift
@@ -137,26 +150,31 @@
 
         // Function to remove a gift
         async function removeGift(id) {
-            if (userName !== 'Nicolas Gauvin-Gingras') {
-                alert(`Tu n'as pas la permission de supprimer des cadeaux.`);
-                return;
-            }
             await fetch(`/gifts/${id}`, { method: 'DELETE' });
             loadGifts(); // Refresh the gift list after removing
         }
 
-        // Function to prompt for the user's name
-        function askForName() {
-            userName = prompt("S'il vous plaît, entrez votre nom. Vous devez utiliser le même nom à chaque connexion pour réserver ou annuler un cadeau.");
-            if (userName) {
-                const welcomeMessage = document.getElementById('welcome-message');
-                welcomeMessage.textContent = `Welcome, ${userName}!`;
-                welcomeMessage.style.display = 'block';
+        // Function to prompt for the password if in modify mode
+        async function askForPassword() {
+            const password = prompt("Please enter the password to modify this list:");
+            const response = await fetch(`/gift-lists/${listId}/verify-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+            const result = await response.json();
+            if (!result.success) {
+                alert('Incorrect password!');
+                window.location.href = 'select-list.html';
+            } else {
+                document.getElementById('new-gift-container').style.display = 'block'; // Show the add gift container
             }
         }
 
-        window.onload = () => {
-            askForName();
+        window.onload = async () => {
+            if (mode === 'modify') {
+                await askForPassword();
+            }
             loadGifts();
         };
     </script>
@@ -175,10 +193,13 @@
 
         <ul id="gift-list"></ul>
 
-        <div id="new-gift-container">
+        <div id="new-gift-container" style="display: none;">
             <input type="text" id="new-gift" placeholder="Gift name">
             <button id="add-gift-button" onclick="addGift()">Add Gift</button>
         </div>
+
+        <!-- Return button -->
+        <button onclick="window.location.href='select-list.html'">Return</button>
     </main>
 
     <footer>
