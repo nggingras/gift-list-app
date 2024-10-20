@@ -1,21 +1,30 @@
 /* Font Import */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
+/* Color Variables */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --light-color: #f4f4f9;
+    --dark-color: #333;
+    --border-color: #ddd;
+    --hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #f4f4f9;
-    color: #333;
+    background-color: var(--light-color);
+    color: var(--dark-color);
 }
 
 header, footer {
-<<<<<<< HEAD
-    background-color: #6c757d; /* Gray */
-=======
-    background-color: #343a40; /* Dark Gray */
->>>>>>> 8cf9aacbdbe0392a9ec0dfca5c1705038212cd06
+    background-color: var(--secondary-color);
     color: white;
     padding: 1rem;
     text-align: center;
@@ -34,7 +43,7 @@ main {
 h1 {
     font-size: 2rem;
     margin: 0;
-    color: #007bff;
+    color: var(--primary-color);
 }
 
 ul {
@@ -46,20 +55,15 @@ li {
     margin: 0.5rem 0;
 }
 
-<<<<<<< HEAD
 /* Gift List Item Styles */
 .gift-list-item {
-=======
-/* Gift Item Styles */
-.gift-item {
->>>>>>> 8cf9aacbdbe0392a9ec0dfca5c1705038212cd06
     margin-bottom: 10px;
     padding: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #fff;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -67,12 +71,18 @@ li {
 
 .gift-list-item:hover {
     background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--hover-shadow);
 }
 
 .list-name {
     flex-grow: 1;
     font-weight: bold;
+}
+
+/* Button Container Styles */
+.button-container {
+    display: flex;
+    gap: 10px;
 }
 
 /* Button Styles */
@@ -83,10 +93,8 @@ button {
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
-<<<<<<< HEAD
-    background-color: #6c757d; /* Gray */
+    background-color: var(--secondary-color);
     color: white;
-    margin-left: 10px;
 }
 
 button:hover {
@@ -96,7 +104,7 @@ button:hover {
 
 /* View Button Styles */
 .view-button {
-    background-color: #28a745; /* Green */
+    background-color: var(--success-color);
 }
 
 .view-button:hover {
@@ -105,27 +113,16 @@ button:hover {
 
 /* Modify Button Styles */
 .modify-button {
-    background-color: #007bff; /* Blue */
+    background-color: var(--primary-color);
 }
 
 .modify-button:hover {
     background-color: #0056b3;
 }
 
-=======
-    background-color: #007bff; /* Blue */
-    color: white;
-}
-
-button:hover {
-    background-color: #0056b3; /* Darker Blue */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
->>>>>>> 8cf9aacbdbe0392a9ec0dfca5c1705038212cd06
 /* Reserve Button Styles */
 .reserve-button {
-    background-color: #28a745; /* Green */
+    background-color: var(--success-color);
 }
 
 .reserve-button:hover {
@@ -134,11 +131,29 @@ button:hover {
 
 /* Unreserve Button Styles */
 .unreserve-button {
-    background-color: #dc3545; /* Red */
+    background-color: var(--danger-color);
 }
 
 .unreserve-button:hover {
     background-color: #c82333;
+}
+
+/* Add Gift Button Styles */
+.add-gift-button {
+    background-color: var(--primary-color);
+}
+
+.add-gift-button:hover {
+    background-color: #0056b3;
+}
+
+/* Return Button Styles */
+.return-button {
+    background-color: var(--warning-color);
+}
+
+.return-button:hover {
+    background-color: #e0a800;
 }
 
 /* Styles for select-list.html */
@@ -149,7 +164,7 @@ button:hover {
     justify-content: space-between;
     align-items: center;
     background-color: #fff;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -157,12 +172,12 @@ button:hover {
 
 #giftLists li:hover {
     background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--hover-shadow);
 }
 
 #giftLists a {
     text-decoration: none;
-    color: #007bff;
+    color: var(--primary-color);
     margin-right: 10px;
     transition: color 0.3s ease;
 }
@@ -184,73 +199,6 @@ input[type="text"], input[type="password"] {
 }
 
 input[type="text"]:focus, input[type="password"]:focus {
-    border-color: #007bff;
+    border-color: var(--primary-color);
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-button {
-    margin-top: 10px;
-    padding: 10px 15px;
-    font-size: 14px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-<<<<<<< HEAD
-    background-color: #6c757d; /* Gray */
-=======
-    background-color: #007bff; /* Blue */
->>>>>>> 8cf9aacbdbe0392a9ec0dfca5c1705038212cd06
-    color: white;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-button:hover {
-<<<<<<< HEAD
-    background-color: #5a6268; /* Darker Gray */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-=======
-    background-color: #0056b3; /* Darker Blue */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Additional Styles */
-.message {
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    background-color: #e9ecef;
-    color: #333;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.new-gift-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.new-gift-container input {
-    margin-bottom: 10px;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: calc(100% - 22px); /* Adjust width to fit within the container */
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.new-gift-container input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-.new-gift-container button {
-    align-self: flex-end;
-    background-color: #28a745; /* Green */
-}
-
-.new-gift-container button:hover {
-    background-color: #218838; /* Darker Green */
->>>>>>> 8cf9aacbdbe0392a9ec0dfca5c1705038212cd06
 }
