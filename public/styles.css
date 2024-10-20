@@ -11,7 +11,11 @@ body {
 }
 
 header, footer {
+<<<<<<< HEAD
     background-color: #6c757d; /* Gray */
+=======
+    background-color: #343a40; /* Dark Gray */
+>>>>>>> 8cf9aacbdbe0392a9ec0dfca5c1705038212cd06
     color: white;
     padding: 1rem;
     text-align: center;
@@ -42,8 +46,13 @@ li {
     margin: 0.5rem 0;
 }
 
+<<<<<<< HEAD
 /* Gift List Item Styles */
 .gift-list-item {
+=======
+/* Gift Item Styles */
+.gift-item {
+>>>>>>> 8cf9aacbdbe0392a9ec0dfca5c1705038212cd06
     margin-bottom: 10px;
     padding: 15px;
     display: flex;
@@ -74,6 +83,7 @@ button {
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
+<<<<<<< HEAD
     background-color: #6c757d; /* Gray */
     color: white;
     margin-left: 10px;
@@ -102,6 +112,17 @@ button:hover {
     background-color: #0056b3;
 }
 
+=======
+    background-color: #007bff; /* Blue */
+    color: white;
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker Blue */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+>>>>>>> 8cf9aacbdbe0392a9ec0dfca5c1705038212cd06
 /* Reserve Button Styles */
 .reserve-button {
     background-color: #28a745; /* Green */
@@ -174,12 +195,62 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+<<<<<<< HEAD
     background-color: #6c757d; /* Gray */
+=======
+    background-color: #007bff; /* Blue */
+>>>>>>> 8cf9aacbdbe0392a9ec0dfca5c1705038212cd06
     color: white;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 button:hover {
+<<<<<<< HEAD
     background-color: #5a6268; /* Darker Gray */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+=======
+    background-color: #0056b3; /* Darker Blue */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Additional Styles */
+.message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background-color: #e9ecef;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.new-gift-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.new-gift-container input {
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: calc(100% - 22px); /* Adjust width to fit within the container */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.new-gift-container input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.new-gift-container button {
+    align-self: flex-end;
+    background-color: #28a745; /* Green */
+}
+
+.new-gift-container button:hover {
+    background-color: #218838; /* Darker Green */
+>>>>>>> 8cf9aacbdbe0392a9ec0dfca5c1705038212cd06
 }

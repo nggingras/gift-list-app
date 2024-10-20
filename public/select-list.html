@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<<<<<<< HEAD
     <header>
         <h1>Select a Gift List</h1>
     </header>
@@ -22,6 +23,25 @@
     </main>
 
     <footer>
+=======
+    <header class="header">
+        <h1>Select a Gift List</h1>
+    </header>
+
+    <main class="main-content">
+        <ul id="giftLists" class="gift-list">
+            <!-- Gift lists will be populated here -->
+        </ul>
+
+        <div class="new-gift-container">
+            <input type="text" id="newListName" class="input-field" placeholder="New list name">
+            <input type="password" id="newListPassword" class="input-field" placeholder="Password">
+            <button class="button" onclick="addGiftList()">Add List</button>
+        </div>
+    </main>
+
+    <footer class="footer">
+>>>>>>> 8cf9aacbdbe0392a9ec0dfca5c1705038212cd06
         <p>&copy; 2023 Gift List App</p>
     </footer>
 
@@ -34,6 +54,7 @@
 
             giftLists.forEach(list => {
                 const li = document.createElement('li');
+<<<<<<< HEAD
                 li.className = 'gift-list-item';
 
                 const listName = document.createElement('span');
@@ -59,6 +80,18 @@
                 li.appendChild(listName);
                 li.appendChild(viewButton);
                 li.appendChild(modifyButton);
+=======
+                const viewLink = document.createElement('a');
+                viewLink.href = `index.html?listId=${list.id}&mode=view`;
+                viewLink.textContent = `${list.name} (View)`;
+
+                const modifyLink = document.createElement('a');
+                modifyLink.href = `index.html?listId=${list.id}&mode=modify`;
+                modifyLink.textContent = ` (Modify)`;
+
+                li.appendChild(viewLink);
+                li.appendChild(modifyLink);
+>>>>>>> 8cf9aacbdbe0392a9ec0dfca5c1705038212cd06
                 giftListsContainer.appendChild(li);
             });
         }
