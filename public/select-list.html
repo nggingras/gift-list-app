@@ -34,16 +34,31 @@
 
             giftLists.forEach(list => {
                 const li = document.createElement('li');
-                const viewLink = document.createElement('a');
-                viewLink.href = `index.html?listId=${list.id}&mode=view`;
-                viewLink.textContent = `${list.name} (View)`;
+                li.className = 'gift-list-item';
 
-                const modifyLink = document.createElement('a');
-                modifyLink.href = `index.html?listId=${list.id}&mode=modify`;
-                modifyLink.textContent = ` (Modify)`;
+                const listName = document.createElement('span');
+                listName.textContent = list.name;
+                listName.className = 'list-name';
 
-                li.appendChild(viewLink);
-                li.appendChild(modifyLink);
+                const viewButton = document.createElement('button');
+                viewButton.textContent = 'View';
+                viewButton.className = 'view-button';
+                viewButton.onclick = () => {
+                    if (confirm('Are you sure you want to view this list?')) {
+                        window.location.href = `index.html?listId=${list.id}&mode=view`;
+                    }
+                };
+
+                const modifyButton = document.createElement('button');
+                modifyButton.textContent = 'Modify';
+                modifyButton.className = 'modify-button';
+                modifyButton.onclick = () => {
+                    window.location.href = `index.html?listId=${list.id}&mode=modify`;
+                };
+
+                li.appendChild(listName);
+                li.appendChild(viewButton);
+                li.appendChild(modifyButton);
                 giftListsContainer.appendChild(li);
             });
         }
