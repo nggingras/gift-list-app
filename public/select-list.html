@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Gift List</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Select a Gift List</h1>
+    </header>
+
+    <main class="main-content">
+        <ul id="giftLists" class="gift-list">
+            <!-- Gift lists will be populated here -->
+        </ul>
+
+        <div class="new-gift-container">
+            <input type="text" id="newListName" class="input-field" placeholder="New list name">
+            <input type="password" id="newListPassword" class="input-field" placeholder="Password">
+            <button class="button" onclick="addGiftList()">Add List</button>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2023 Gift List App</p>
+    </footer>
+
+    <script>
+        async function loadGiftLists() {
+            const response = await fetch('/gift-lists');
+            const giftLists = await response.json();
+            const giftListsContainer = document.getElementById('giftLists');
+            giftListsContainer.innerHTML = ''; // Clear the list
+
+            giftLists.forEach(list => {
+                const li = document.createElement('li');
+                const viewLink = document.createElement('a');
+                viewLink.href = `index.html?listId=${list.id}&mode=view`;
+                viewLink.textContent = `${list.name} (View)`;
+
+                const modifyLink = document.createElement('a');
+                modifyLink.href = `index.html?listId=${list.id}&mode=modify`;
+                modifyLink.textContent = ` (Modify)`;
+
+                li.appendChild(viewLink);
+                li.appendChild(modifyLink);
+                giftListsContainer.appendChild(li);
+            });
+        }
+
+        async function addGiftList() {
+            const newListName = document.getElementById('newListName').value;
+            const newListPassword = document.getElementById('newListPassword').value;
+            if (newListName && newListPassword) {
+                await fetch('/gift-lists', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: newListName, password: newListPassword })
+                });
+                document.getElementById('newListName').value = '';
+                document.getElementById('newListPassword').value = '';
+                loadGiftLists(); // Refresh the list after adding a new list
+            }
+        }
+
+        window.onload = loadGiftLists;
+    </script>
+</body>
+</html>
