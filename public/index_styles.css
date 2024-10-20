@@ -1,0 +1,132 @@
+/* Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+header, footer {
+    background-color: #6c757d; /* Gray */
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+main {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1 {
+    font-size: 2rem;
+    margin: 0;
+    color: #007bff;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 0.5rem 0;
+}
+
+/* Gift Item Styles */
+.gift-item {
+    margin-bottom: 10px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gift-item:hover {
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.gift-item.reserved {
+    background-color: #f0f0f0;
+    color: #888;
+    text-decoration: line-through;
+}
+
+.gift-name {
+    flex-grow: 1;
+    font-weight: bold;
+}
+
+/* Button Container Styles */
+.button-container {
+    display: flex;
+    gap: 10px;
+}
+
+/* Button Styles */
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #6c757d; /* Gray */
+    color: white;
+}
+
+button:hover {
+    background-color: #5a6268; /* Darker Gray */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Reserve Button Styles */
+.reserve-button {
+    background-color: #28a745; /* Green */
+}
+
+.reserve-button:hover {
+    background-color: #218838;
+}
+
+/* Unreserve Button Styles */
+.unreserve-button {
+    background-color: #dc3545; /* Red */
+}
+
+.unreserve-button:hover {
+    background-color: #c82333;
+}
+
+/* Add Gift Button Styles */
+.add-gift-button {
+    background-color: #007bff; /* Blue */
+}
+
+.add-gift-button:hover {
+    background-color: #0056b3;
+}
+
+/* Return Button Styles */
+.return-button {
+    background-color: #ffc107; /* Yellow */
+}
+
+.return-button:hover {
+    background-color: #e0a800;
+}
