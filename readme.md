@@ -56,3 +56,8 @@ gift-list-app/
 ├── gift-list.db
 └── README.md
 ```
+
+## To add
+- Allow list creator this disable his list so nobody can start to reserve gift ? 
+- Add a possibility to access directly my list with a single list.
+- Add a user connection page if user want to create a list.

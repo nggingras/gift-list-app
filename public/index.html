@@ -17,6 +17,7 @@
 
         const listId = getQueryParam('listId');
         mode = getQueryParam('mode') || 'view';
+        const directAccess = getQueryParam('directAccess');
 
         if (!listId) {
             alert('No gift list selected!');
@@ -25,7 +26,7 @@
 
         // Function to load the list of gifts
         async function loadGifts() {
-            const response = await fetch(`/gifts?listId=${listId}`);
+            const response = await fetch(`/gifts?listId=${listId}&directAccess=${directAccess}`);
             const gifts = await response.json();
             const giftList = document.getElementById('gift-list');
             giftList.innerHTML = ''; // Clear the list
@@ -176,6 +177,14 @@
                 await askForPassword();
             }
             loadGifts();
+
+            // Disable the return button if accessed directly
+            const directAccess = getQueryParam('directAccess');
+            if (directAccess === 'true') {
+                document.getElementById('return-button').style.display = 'none';
+            } else {
+                document.getElementById('return-button').style.display = 'block';
+            }
         };
     </script>
 </head>

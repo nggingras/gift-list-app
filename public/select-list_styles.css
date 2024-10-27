@@ -98,6 +98,11 @@ button:hover {
     background-color: #218838;
 }
 
+.view-button {
+    position: relative;
+    left: -10px; /* Move the button left by 10px */
+}
+
 /* Modify Button Styles */
 .modify-button {
     background-color: #007bff; /* Blue */

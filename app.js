@@ -119,6 +119,16 @@ app.delete('/gifts/:id', (req, res) => {
     });
 });
 
+// Route for accessing the select list
+app.get('/select-list', (req, res) => {
+    res.sendFile(__dirname + '/public/select-list.html');
+});
+
+// Route for accessing a specific list directly
+app.get('/list/:id', (req, res) => {
+    res.sendFile(__dirname + '/public/list.html');
+});
+
 // Start the server on port 3000 and bind to all network interfaces
 const PORT = 3000;
 app.listen(PORT, '0.0.0.0', () => {
