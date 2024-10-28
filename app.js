@@ -13,7 +13,8 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS gift_lists (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        disableReservations BOOLEAN DEFAULT 0
     )`);
 
     db.run(`CREATE TABLE IF NOT EXISTS gifts (
@@ -33,6 +34,17 @@ app.get('/gift-lists', (req, res) => {
             return res.status(500).json({ error: err.message });
         }
         res.json(rows);
+    });
+});
+
+// Fetch a specific gift list
+app.get('/gift-lists/:id', (req, res) => {
+    const id = req.params.id;
+    db.get('SELECT * FROM gift_lists WHERE id = ?', [id], (err, row) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json(row);
     });
 });
 
@@ -78,11 +90,19 @@ app.get('/gifts', (req, res) => {
 app.post('/gifts/:id/reserve', (req, res) => {
     const id = req.params.id;
     const reservedBy = req.body.reservedBy;
-    db.run('UPDATE gifts SET reserved = 1, reservedBy = ? WHERE id = ?', [reservedBy, id], function(err) {
+    db.get('SELECT disableReservations FROM gift_lists WHERE id = (SELECT listId FROM gifts WHERE id = ?)', [id], (err, row) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        res.json({ success: true });
+        if (row.disableReservations) {
+            return res.status(400).json({ error: 'Reservations are disabled for this list.' });
+        }
+        db.run('UPDATE gifts SET reserved = 1, reservedBy = ? WHERE id = ?', [reservedBy, id], function(err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({ success: true });
+        });
     });
 });
 
@@ -112,6 +132,17 @@ app.post('/gifts', (req, res) => {
 app.delete('/gifts/:id', (req, res) => {
     const id = req.params.id;
     db.run('DELETE FROM gifts WHERE id = ?', [id], function(err) {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json({ success: true });
+    });
+});
+
+// Endpoint to disable reservations
+app.post('/disable-reservations', (req, res) => {
+    const { listId, disableReservations } = req.body;
+    db.run('UPDATE gift_lists SET disableReservations = ? WHERE id = ?', [disableReservations, listId], function(err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }

@@ -58,6 +58,5 @@ gift-list-app/
 ```
 
 ## To add
-- Allow list creator this disable his list so nobody can start to reserve gift ? 
-- Add a possibility to access directly my list with a single list.
+- Hide the parameter in a direct-access.html page so it set the parameter in a session storage instead
 - Add a user connection page if user want to create a list.

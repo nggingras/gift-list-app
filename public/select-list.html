@@ -43,9 +43,13 @@
                 const viewButton = document.createElement('button');
                 viewButton.textContent = 'View';
                 viewButton.className = 'view-button';
-                viewButton.onclick = () => {
-                    if (confirm('Es-tu certain de vouloir ouvrir la liste ? Tu pourras voir les cadeaux qui sont réservés.')) {
-                        window.location.href = `index.html?listId=${list.id}&mode=view&directAccess=false`;
+                viewButton.onclick = async () => {
+                    if (list.disableReservations) {
+                        alert('Le créateur n\'a pas encore activé la liste.');
+                    } else {
+                        if (confirm('Es-tu certain de vouloir ouvrir la liste ? Tu pourras voir les cadeaux qui sont réservés.')) {
+                            window.location.href = `index.html?listId=${list.id}&mode=view&directAccess=false`;
+                        }
                     }
                 };
 

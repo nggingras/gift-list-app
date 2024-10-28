@@ -169,16 +169,25 @@
                 window.location.href = 'select-list.html';
             } else {
                 document.getElementById('new-gift-container').style.display = 'block'; // Show the add gift container
+                document.getElementById('disable-reservations-container').style.display = 'block'; // Show the disable reservations option
             }
+        }
+
+        // Function to fetch and set the disableReservations state
+        async function fetchDisableReservations() {
+            const response = await fetch(`/gift-lists/${listId}`);
+            const list = await response.json();
+            document.getElementById('disable-reservations').checked = list.disableReservations;
         }
 
         window.onload = async () => {
             if (mode === 'modify') {
                 await askForPassword();
+                await fetchDisableReservations();
             }
             loadGifts();
 
-            // Disable the return button if accessed directly
+            // Hide the return button if accessed directly
             const directAccess = getQueryParam('directAccess');
             if (directAccess === 'true') {
                 document.getElementById('return-button').style.display = 'none';
@@ -186,6 +195,19 @@
                 document.getElementById('return-button').style.display = 'block';
             }
         };
+
+        async function saveDisableReservations() {
+            const disableReservations = document.getElementById('disable-reservations').checked;
+            const response = await fetch(`/disable-reservations`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ listId, disableReservations })
+            });
+            const result = await response.json();
+            if (!result.success) {
+                alert('Failed to save disable reservations setting.');
+            }
+        }
     </script>
 </head>
 <body>
@@ -207,8 +229,17 @@
             <button id="add-gift-button" class="add-gift-button" onclick="addGift()">Add Gift</button>
         </div>
 
-        <!-- Return button -->
-        <button id="return-button" class="return-button" onclick="window.location.href='select-list.html'">Return</button>
+        <!-- Return button and disable reservations slider -->
+        <div class="control-container">
+            <button id="return-button" class="return-button" onclick="window.location.href='select-list.html'">Return</button>
+            <div id="disable-reservations-container" class="switch-container" style="display:none;">
+                <label class="switch">
+                    <input type="checkbox" id="disable-reservations" onchange="saveDisableReservations()">
+                    <span class="slider round"></span>
+                </label>
+                <span>Bloquer l'accès à la liste.</span>
+            </div>
+        </div>
     </main>
 
     <footer>
