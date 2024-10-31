@@ -4,9 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Gift List</title>
-    <link rel="stylesheet" href="select-list_styles.css">
+    <link rel="stylesheet" href="select-list.css">
+    <style>
+        /* Add some basic styling for the greeting */
+        #greeting {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
+    <div id="greeting"></div>
     <header>
         <h1>Select a Gift List</h1>
     </header>
@@ -26,6 +36,18 @@
     </footer>
 
     <script>
+        // Fetch the username from the server and display the greeting
+        fetch('/username')
+            .then(response => response.json())
+            .then(data => {
+                if (data.username) {
+                    document.getElementById('greeting').innerText = 'Bonjour ' + data.username;
+                } else {
+                    document.getElementById('greeting').innerText = 'Bonjour';
+                }
+            })
+            .catch(error => console.error('Error fetching username:', error));
+
         async function loadGiftLists() {
             const response = await fetch('/gift-lists');
             const giftLists = await response.json();

@@ -1,10 +1,78 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
-const app = express();
+const path = require('path');
+const session = require('express-session');
 
-app.use(bodyParser.json());
-app.use(express.static('public'));
+const app = express();
+const PORT = 3000;
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({
+    secret: 'your_secret_key', // Replace with a secure secret key
+    resave: false,
+    saveUninitialized: false
+}));
+
+// Set the default page to the login page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Initialize login database
+const loginDb = new sqlite3.Database('./login.db', (err) => {
+    if (err) {
+        console.error(err.message);
+    }
+    console.log('Connected to the login database.');
+});
+
+loginDb.run(`CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE,
+    password TEXT
+)`);
+
+// Handle user login
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    loginDb.get('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], (err, row) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send('Internal server error');
+        } else if (row) {
+            req.session.loggedin = true;
+            req.session.username = username;
+            res.redirect('/select-list');
+        } else {
+            res.send('Invalid credentials');
+        }
+    });
+});
+
+// Handle account creation
+app.post('/signup', (req, res) => {
+    const { username, password } = req.body;
+    loginDb.run('INSERT INTO users (username, password) VALUES (?, ?)', function(err) {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send('Internal server error');
+        } else {
+            res.send('Account created successfully');
+        }
+    });
+});
+
+// Route for getting the username
+app.get('/username', (req, res) => {
+    if (req.session.loggedin) {
+        res.json({ username: req.session.username });
+    } else {
+        res.json({ username: null });
+    }
+});
 
 const db = new sqlite3.Database('./gift-list.db');
 
@@ -152,7 +220,11 @@ app.post('/disable-reservations', (req, res) => {
 
 // Route for accessing the select list
 app.get('/select-list', (req, res) => {
-    res.sendFile(__dirname + '/public/select-list.html');
+    if (req.session.loggedin) {
+        res.sendFile(path.join(__dirname, 'public/select-list.html'));
+    } else {
+        res.redirect('/');
+    }
 });
 
 // Route for accessing a specific list directly
@@ -160,8 +232,6 @@ app.get('/list/:id', (req, res) => {
     res.sendFile(__dirname + '/public/list.html');
 });
 
-// Start the server on port 3000 and bind to all network interfaces
-const PORT = 3000;
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

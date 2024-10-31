@@ -13,17 +13,17 @@ It allows an host to create a gift. URL is then shared to users so they can rese
 - **Unreserve Gifts:** Users can unreserve gifts they have reserved.
 - **Remove Gifts:** Users with the appropriate permissions can remove gifts from the list.
 
-It uses the following technologies :
+It uses the following technologies:
 
-Backend:
-Node.js
-Express
-SQLite
+**Backend:**
+- Node.js
+- Express
+- SQLite
 
-Frontend:
-HTML
-CSS
-JavaScript
+**Frontend:**
+- HTML
+- CSS
+- JavaScript
 
 ## How to Install and Configure
 
@@ -34,15 +34,34 @@ JavaScript
 
 ### Installation and execution
 
-- Download node js from the official web site https://nodejs.org.
-- Install dependancies by running : npm install express sqlite3 body-parser
-- Start the server with the following command : node app.js
-- Open Web browser and navigate to http://localhost:3000
+- Download Node.js from the official website: https://nodejs.org.
+- Install dependencies by running:
 
-To open the port to outsiders, you can use third party like ngrok.exe. 
-- Download ngrok.exe
-- Drop ngrok.exe in the repository
-- Run the following command: ngrok http 3000
+  ```
+  npm install express sqlite3 body-parser express-session
+  ```
+
+- Start the server with the following command:
+
+  ```
+  node app.js
+  ```
+
+- Open your web browser and navigate to:
+
+  ```
+  http://localhost:3000
+  ```
+
+To open the port to outsiders, you can use a third-party tool like `ngrok.exe`:
+
+- Download `ngrok.exe`.
+- Place `ngrok.exe` in the repository directory.
+- Run the following command:
+
+  ```
+  ngrok http 3000
+  ```
 
 ## Project structure
 
@@ -60,3 +79,9 @@ gift-list-app/
 ## To add
 - Hide the parameter in a direct-access.html page so it set the parameter in a session storage instead
 - Add a user connection page if user want to create a list.
+- Add copilot test
+- Add copilot documentation
+- Add copilot security autofix
+- Create Doc
+- Create unit test
+- Add replace username by a drop list to select across existing user for username.
