@@ -38,7 +38,7 @@ It uses the following technologies:
 - Install dependencies by running:
 
   ```
-  npm install express sqlite3 body-parser express-session
+  npm install express sqlite3 body-parser express-session bcrypt
   ```
 
 - Start the server with the following command:
@@ -85,3 +85,5 @@ gift-list-app/
 - Create Doc
 - Create unit test
 - Add replace username by a drop list to select across existing user for username.
+- Handle same username errors
+- Add disconnect button

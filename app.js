@@ -3,12 +3,14 @@ const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const session = require('express-session');
+const bcrypt = require('bcrypt'); // Add this at the top
 
 const app = express();
 const PORT = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
 app.use(session({
     secret: 'your_secret_key', // Replace with a secure secret key
@@ -35,34 +37,105 @@ loginDb.run(`CREATE TABLE IF NOT EXISTS users (
     password TEXT
 )`);
 
-// Handle user login
-app.post('/login', (req, res) => {
+// Update the login handler to use hashed password comparison
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    loginDb.get('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], (err, row) => {
+    
+    if (!username || !password) {
+        return res.status(400).send('Username and password are required');
+    }
+
+    loginDb.get('SELECT * FROM users WHERE username = ?', [username], async (err, user) => {
         if (err) {
             console.error(err.message);
-            res.status(500).send('Internal server error');
-        } else if (row) {
-            req.session.loggedin = true;
-            req.session.username = username;
-            res.redirect('/select-list');
-        } else {
-            res.send('Invalid credentials');
+            return res.status(500).send('Internal server error');
+        }
+        
+        if (!user) {
+            return res.status(401).send('Username does not exist');
+        }
+
+        try {
+            const match = await bcrypt.compare(password, user.password);
+            if (match) {
+                req.session.loggedin = true;
+                req.session.username = username;
+                return res.redirect('/select-list');
+            } else {
+                return res.status(401).send('Incorrect password');
+            }
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send('Internal server error');
         }
     });
 });
 
-// Handle account creation
-app.post('/signup', (req, res) => {
-    const { username, password } = req.body;
-    loginDb.run('INSERT INTO users (username, password) VALUES (?, ?)', function(err) {
-        if (err) {
-            console.error(err.message);
-            res.status(500).send('Internal server error');
-        } else {
-            res.send('Account created successfully');
+// Update the signup handler to handle both JSON and form data
+app.post('/signup', async (req, res) => {
+    try {
+        const username = req.body.username?.trim();
+        const password = req.body.password?.trim();
+        
+        console.log('Signup attempt:', { username }); // for debugging
+        
+        // Input validation
+        if (!username || !password) {
+            return res.status(400).send('Username and password are required');
         }
-    });
+        
+        if (username.length < 3) {
+            return res.status(400).send('Username must be at least 3 characters long');
+        }
+        
+        if (password.length < 6) {
+            return res.status(400).send('Password must be at least 6 characters long');
+        }
+
+        // Check if username exists
+        const user = await new Promise((resolve, reject) => {
+            loginDb.get('SELECT username FROM users WHERE username = ?', [username], (err, row) => {
+                if (err) {
+                    console.error('Database error:', err);
+                    reject(err);
+                }
+                resolve(row);
+            });
+        });
+
+        if (user) {
+            return res.status(400).send('Username already exists');
+        }
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create new user
+        await new Promise((resolve, reject) => {
+            loginDb.run('INSERT INTO users (username, password) VALUES (?, ?)', 
+                [username, hashedPassword], 
+                function(err) {
+                    if (err) {
+                        console.error('Insert error:', err);
+                        reject(err);
+                    }
+                    resolve(this);
+                }
+            );
+        });
+
+        // Set session
+        req.session.loggedin = true;
+        req.session.username = username;
+        
+        console.log('Account created successfully:', { username }); // for debugging
+        
+        return res.redirect('/select-list');
+
+    } catch (err) {
+        console.error('Signup error:', err);
+        return res.status(500).send('An error occurred during signup. Please try again.');
+    }
 });
 
 // Route for getting the username

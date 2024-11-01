@@ -2,19 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account</title>
-    <link rel="stylesheet" href="create-account.css">
+    <link rel="stylesheet" href="login.css">
 </head>
 <body>
-    <form id="create-account-form" action="/create-account" method="POST">
-        <h1>Create Account</h1>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        
-        <button type="submit">Register</button>
-    </form>
+    <div class="login-container">
+        <h2>Create Account</h2>
+        <form id="signup-form">
+            <label for="signup-username">Username:</label>
+            <input type="text" id="signup-username" name="username" required>
+            <label for="signup-password">Password:</label>
+            <input type="password" id="signup-password" name="password" required>
+            <button type="submit">Create Account</button>
+        </form>
+        <p class="login-text">Already have an account?</p>
+        <button class="login-button" onclick="window.location.href='login.html'">Back to Login</button>
+    </div>
+
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('signup-username').value;
+            const password = document.getElementById('signup-password').value;
+
+            fetch('/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+                return response.text();
+            })
+            .then(data => {
+                if (data && !data.includes('select-list')) {
+                    alert(data);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        });
+    </script>
 </body>
 </html>

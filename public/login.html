@@ -16,8 +16,8 @@
             <input type="password" id="password" name="password" required>
             <button type="submit">Login</button>
         </form>
-        <p class="create-account-text">Don't have an account?</p>
-        <button class="create-account-button" onclick="window.location.href='create-account.html'">Create Account</button>
+        <p class="create-account-text">Don't have an account yet?</p>
+        <button class="create-account-button" onclick="window.location.href='create-account.html'">Create an Account</button>
     </div>
     <script>
     // Inline scripts from login.js
@@ -35,9 +35,33 @@
         .then(response => {
             if (response.redirected) {
                 window.location.href = response.url;
+                return;
             }
+            return response.text();
+        })
+        .then(data => {
+            if (data) {
+                const errorMessage = document.createElement('p');
+                errorMessage.style.color = 'red';
+                errorMessage.textContent = data;
+                
+                // Remove any existing error message
+                const existingError = document.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                errorMessage.className = 'error-message';
+                document.getElementById('login-form').appendChild(errorMessage);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
         });
     });
+
+    // Remove the unused createAccount function since we're using a direct link now
     </script>
 </body>
 </html>
