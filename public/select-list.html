@@ -13,10 +13,27 @@
             left: 10px;
             font-size: 18px;
         }
+
+        #disconnect {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #disconnect:hover {
+            background-color: #cc0000;
+        }
     </style>
 </head>
 <body>
     <div id="greeting"></div>
+    <button id="disconnect" onclick="handleDisconnect()">Déconnexion</button>
     <header>
         <h1>Select a Gift List</h1>
     </header>
@@ -108,6 +125,17 @@
                 document.getElementById('newListName').value = '';
                 document.getElementById('newListPassword').value = '';
                 loadGiftLists(); // Refresh the list after adding a new list
+            }
+        }
+
+        async function handleDisconnect() {
+            try {
+                await fetch('/logout', {
+                    method: 'POST'
+                });
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Error during logout:', error);
             }
         }
 
