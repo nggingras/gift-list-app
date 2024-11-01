@@ -155,6 +155,7 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         password TEXT NOT NULL,
+        creator TEXT NOT NULL,
         disableReservations BOOLEAN DEFAULT 0
     )`);
 
@@ -192,12 +193,22 @@ app.get('/gift-lists/:id', (req, res) => {
 // Add a new gift list
 app.post('/gift-lists', (req, res) => {
     const { name, password } = req.body;
-    db.run('INSERT INTO gift_lists (name, password) VALUES (?, ?)', [name, password], function(err) {
-        if (err) {
-            return res.status(500).json({ error: err.message });
+    
+    if (!req.session.loggedin || !req.session.username) {
+        return res.status(401).json({ error: 'User must be logged in' });
+    }
+    
+    db.run('INSERT INTO gift_lists (name, password, creator) VALUES (?, ?, ?)', 
+        [name, password, req.session.username], 
+        function(err) {
+            if (err) {
+                console.error('Error adding gift list:', err);
+                res.status(500).send({ error: 'Internal Server Error' });
+            } else {
+                res.status(201).send({ id: this.lastID });
+            }
         }
-        res.json({ success: true, id: this.lastID });
-    });
+    );
 });
 
 // Verify password for modifying a list

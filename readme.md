@@ -6,12 +6,13 @@ The Gift List App is a simple web application that allows users to manage a list
 
 ## What it does
 
-It allows an host to create a gift. URL is then shared to users so they can reserve gifts. The list is stored in a SQL BD locally on the host repository.
+It allows a host to create a gift list. The URL is then shared with users so they can reserve gifts. The list is stored in a SQL DB locally on the host repository.
 
 - **Add Gifts:** Users can add new gifts to the list.
 - **Reserve Gifts:** Users can reserve gifts, preventing others from reserving the same gift.
 - **Unreserve Gifts:** Users can unreserve gifts they have reserved.
 - **Remove Gifts:** Users with the appropriate permissions can remove gifts from the list.
+- **View Lists:** Users can view available gift lists, except those they have created.
 
 It uses the following technologies:
 
@@ -78,12 +79,11 @@ gift-list-app/
 
 ## To add
 - Hide the parameter in a direct-access.html page so it set the parameter in a session storage instead
-- Add a user connection page if user want to create a list.
 - Add copilot test
 - Add copilot documentation
 - Add copilot security autofix
 - Create Doc
 - Create unit test
-- Add replace username by a drop list to select across existing user for username.
-- Handle same username errors
 - Add disconnect button
+- Ajouter une validation qui empêche d'Avoir deux listes avec le même nom
+- Add app version number 1.0 at the same place on each page
