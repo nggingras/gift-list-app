@@ -86,4 +86,3 @@ gift-list-app/
 - Create unit test
 - Add disconnect button
 - Ajouter une validation qui empêche d'Avoir deux listes avec le même nom
-- Add app version number 1.0 at the same place on each page

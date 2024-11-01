@@ -117,6 +117,19 @@
             const newListName = document.getElementById('newListName').value;
             const newListPassword = document.getElementById('newListPassword').value;
             if (newListName && newListPassword) {
+                // First check if a list with this name already exists
+                const response = await fetch('/gift-lists');
+                const existingLists = await response.json();
+                const nameExists = existingLists.some(list => 
+                    list.name.toLowerCase() === newListName.toLowerCase()
+                );
+
+                if (nameExists) {
+                    alert('Une liste avec ce nom existe déjà. Veuillez choisir un autre nom.');
+                    return;
+                }
+
+                // Proceed with list creation if name is unique
                 await fetch('/gift-lists', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
