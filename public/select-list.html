@@ -108,24 +108,21 @@ This HTML file represents the "Select Gift List" page for the Gift List App. It 
                 listName.className = 'list-name';
                 li.appendChild(listName);
 
-                // Always create the view button container, but only make it visible for non-creators
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'button-container';
+
                 const viewButton = document.createElement('button');
                 viewButton.textContent = 'View';
                 viewButton.className = 'view-button';
-                if (list.creator === currentUsername) {
-                    viewButton.style.visibility = 'hidden';  // Hide but preserve layout
-                } else {
-                    viewButton.onclick = async () => {
-                        if (list.disableReservations) {
-                            alert('Le créateur n\'a pas encore activé la liste.');
-                        } else {
-                            if (confirm('Es-tu certain de vouloir ouvrir la liste ? Tu pourras voir les cadeaux qui sont réservés.')) {
-                                window.location.href = `index.html?listId=${list.id}&mode=view&directAccess=false`;
-                            }
+                viewButton.onclick = async () => {
+                    if (list.disableReservations) {
+                        alert('Le créateur n\'a pas encore activé la liste.');
+                    } else {
+                        if (confirm('Es-tu certain de vouloir ouvrir la liste ? Tu pourras voir les cadeaux qui sont réservés.')) {
+                            window.location.href = `index.html?listId=${list.id}&mode=view&directAccess=false`;
                         }
-                    };
-                }
-                li.appendChild(viewButton);
+                    }
+                };
 
                 const modifyButton = document.createElement('button');
                 modifyButton.textContent = 'Modify';
@@ -134,7 +131,13 @@ This HTML file represents the "Select Gift List" page for the Gift List App. It 
                     window.location.href = `index.html?listId=${list.id}&mode=modify&directAccess=false`;
                 };
 
-                li.appendChild(modifyButton);
+                if (list.creator === currentUsername) {
+                    buttonContainer.appendChild(modifyButton);
+                } else {
+                    buttonContainer.appendChild(viewButton);
+                }
+
+                li.appendChild(buttonContainer);
                 giftListsContainer.appendChild(li);
             });
         }
