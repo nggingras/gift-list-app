@@ -1,3 +1,29 @@
+<!-- 
+
+This HTML file represents the "Select Gift List" page for the Gift List App. It includes the following key sections:
+
+1. **Head Section**:
+    - Sets the document type and language.
+    - Defines meta tags for character set and viewport settings.
+    - Links to an external CSS file (`select-list.css`).
+    - Contains internal CSS for styling the greeting and disconnect button.
+
+2. **Body Section**:
+    - **Greeting and Disconnect Button**: Displays a greeting message and a button to disconnect the user.
+    - **Header**: Contains the main title of the page.
+    - **Main Content**:
+        - An unordered list (`#giftLists`) where gift lists will be dynamically populated.
+        - Input fields for adding a new gift list (`#newListName` and `#newListPassword`).
+        - A button to trigger the addition of a new gift list.
+    - **Footer**: Displays the copyright information.
+
+3. **JavaScript Section**:
+    - Fetches the current username and updates the greeting message.
+    - Defines the `loadGiftLists` function to fetch and display existing gift lists.
+    - Defines the `addGiftList` function to add a new gift list after checking for name uniqueness.
+    - Defines the `handleDisconnect` function to log out the user and redirect to the login page.
+    - Calls `loadGiftLists` on window load to initialize the gift lists display.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>

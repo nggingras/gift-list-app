@@ -40,6 +40,7 @@ It uses the following technologies:
 
   ```
   npm install express sqlite3 body-parser express-session bcrypt
+  npm install --save-dev cypress
   ```
 
 - Start the server with the following command:
@@ -52,6 +53,11 @@ It uses the following technologies:
 
   ```
   http://localhost:3000
+  ```
+
+to run test:
+  ```
+  npx cypress open
   ```
 
 To open the port to outsiders, you can use a third-party tool like `ngrok.exe`:
@@ -78,11 +84,8 @@ gift-list-app/
 ```
 
 ## To add
-- Hide the parameter in a direct-access.html page so it set the parameter in a session storage instead
 - Add copilot test
 - Add copilot documentation
 - Add copilot security autofix
 - Create Doc
 - Create unit test
-- Add disconnect button
-- Ajouter une validation qui empêche d'Avoir deux listes avec le même nom
