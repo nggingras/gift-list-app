@@ -154,7 +154,6 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS gift_lists (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        password TEXT NOT NULL,
         creator TEXT NOT NULL,
         disableReservations BOOLEAN DEFAULT 0
     )`);
@@ -192,14 +191,14 @@ app.get('/gift-lists/:id', (req, res) => {
 
 // Add a new gift list
 app.post('/gift-lists', (req, res) => {
-    const { name, password } = req.body;
+    const { name } = req.body;
     
     if (!req.session.loggedin || !req.session.username) {
         return res.status(401).json({ error: 'User must be logged in' });
     }
     
-    db.run('INSERT INTO gift_lists (name, password, creator) VALUES (?, ?, ?)', 
-        [name, password, req.session.username], 
+    db.run('INSERT INTO gift_lists (name, creator) VALUES (?, ?)', 
+        [name, req.session.username], 
         function(err) {
             if (err) {
                 console.error('Error adding gift list:', err);
@@ -211,21 +210,8 @@ app.post('/gift-lists', (req, res) => {
     );
 });
 
-// Verify password for modifying a list
-app.post('/gift-lists/:id/verify-password', (req, res) => {
-    const id = req.params.id;
-    const { password } = req.body;
-    db.get('SELECT * FROM gift_lists WHERE id = ? AND password = ?', [id, password], (err, row) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        if (row) {
-            res.json({ success: true });
-        } else {
-            res.json({ success: false });
-        }
-    });
-});
+// Remove the verify-password endpoint (delete this entire block)
+// app.post('/gift-lists/:id/verify-password', (req, res) => { ... });
 
 // Fetch gifts for a specific list
 app.get('/gifts', (req, res) => {
@@ -272,33 +258,80 @@ app.post('/gifts/:id/unreserve', (req, res) => {
 // Add a new gift
 app.post('/gifts', (req, res) => {
     const { name, listId } = req.body;
-    db.run('INSERT INTO gifts (name, listId) VALUES (?, ?)', [name, listId], function(err) {
+    
+    // Check if user is logged in and is the creator of the list
+    db.get('SELECT creator FROM gift_lists WHERE id = ?', [listId], (err, row) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        res.json({ success: true, id: this.lastID });
+        if (!row) {
+            return res.status(404).json({ error: 'List not found' });
+        }
+        if (!req.session.loggedin || row.creator !== req.session.username) {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+        
+        db.run('INSERT INTO gifts (name, listId) VALUES (?, ?)', [name, listId], function(err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({ success: true, id: this.lastID });
+        });
     });
 });
 
 // Remove a gift
 app.delete('/gifts/:id', (req, res) => {
     const id = req.params.id;
-    db.run('DELETE FROM gifts WHERE id = ?', [id], function(err) {
+    
+    // Check if user is logged in and is the creator of the list
+    db.get('SELECT gift_lists.creator FROM gift_lists JOIN gifts ON gift_lists.id = gifts.listId WHERE gifts.id = ?', [id], (err, row) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        res.json({ success: true });
+        if (!row) {
+            return res.status(404).json({ error: 'Gift not found' });
+        }
+        if (!req.session.loggedin || row.creator !== req.session.username) {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+        
+        db.run('DELETE FROM gifts WHERE id = ?', [id], function(err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({ success: true });
+        });
     });
 });
 
-// Endpoint to disable reservations
+// Add route for updating disable reservations setting
 app.post('/disable-reservations', (req, res) => {
     const { listId, disableReservations } = req.body;
-    db.run('UPDATE gift_lists SET disableReservations = ? WHERE id = ?', [disableReservations, listId], function(err) {
+    
+    // Check if user is logged in and is the creator of the list
+    db.get('SELECT creator FROM gift_lists WHERE id = ?', [listId], (err, row) => {
         if (err) {
+            console.error('Database error:', err.message);
             return res.status(500).json({ error: err.message });
         }
-        res.json({ success: true });
+        if (!row) {
+            return res.status(404).json({ error: 'List not found' });
+        }
+        if (!req.session.loggedin || row.creator !== req.session.username) {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+        
+        db.run('UPDATE gift_lists SET disableReservations = ? WHERE id = ?', 
+            [disableReservations ? 1 : 0, listId], 
+            function(err) {
+                if (err) {
+                    console.error('Database error:', err.message);
+                    return res.status(500).json({ error: err.message });
+                }
+                res.json({ success: true });
+            }
+        );
     });
 });
 

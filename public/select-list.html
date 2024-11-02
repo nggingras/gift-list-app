@@ -70,7 +70,6 @@ This HTML file represents the "Select Gift List" page for the Gift List App. It 
         </ul>
 
         <input type="text" id="newListName" placeholder="New list name">
-        <input type="password" id="newListPassword" placeholder="Password">
         <button onclick="addGiftList()">Add List</button>
     </main>
 
@@ -118,9 +117,7 @@ This HTML file represents the "Select Gift List" page for the Gift List App. It 
                     if (list.disableReservations) {
                         alert('Le créateur n\'a pas encore activé la liste.');
                     } else {
-                        if (confirm('Es-tu certain de vouloir ouvrir la liste ? Tu pourras voir les cadeaux qui sont réservés.')) {
-                            window.location.href = `index.html?listId=${list.id}&mode=view&directAccess=false`;
-                        }
+                        window.location.href = `index.html?listId=${list.id}&mode=view&directAccess=false`;
                     }
                 };
 
@@ -144,8 +141,7 @@ This HTML file represents the "Select Gift List" page for the Gift List App. It 
 
         async function addGiftList() {
             const newListName = document.getElementById('newListName').value;
-            const newListPassword = document.getElementById('newListPassword').value;
-            if (newListName && newListPassword) {
+            if (newListName) {
                 // First check if a list with this name already exists
                 const response = await fetch('/gift-lists');
                 const existingLists = await response.json();
@@ -162,10 +158,9 @@ This HTML file represents the "Select Gift List" page for the Gift List App. It 
                 await fetch('/gift-lists', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: newListName, password: newListPassword })
+                    body: JSON.stringify({ name: newListName })
                 });
                 document.getElementById('newListName').value = '';
-                document.getElementById('newListPassword').value = '';
                 loadGiftLists(); // Refresh the list after adding a new list
             }
         }
